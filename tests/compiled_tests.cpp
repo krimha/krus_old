@@ -2,7 +2,7 @@
 #include <parselib/finite_state_machine.h>
 
 
-TEST_CASE( "Finite state machine" )
+TEST_CASE( "Finite state machine basics" )
 {
     using DFA = FiniteStateMachine<std::string, char>;
     DFA::StateSet states = {"q1", "q2", "q3"};
@@ -61,8 +61,12 @@ TEST_CASE( "Finite state machine" )
     SECTION ("Test match")
     {
 	REQUIRE(machine.match(std::string{"1101"}) == true );
+	// Test that it is reset
+	REQUIRE(machine.getCurrentState() == start_state);
 	REQUIRE(machine.match(std::string{"110"})  == false);
+	REQUIRE(machine.getCurrentState() == start_state);
 	REQUIRE(machine.match(std::string{"1"})  == true);
+	REQUIRE(machine.getCurrentState() == start_state);
     }
 
 

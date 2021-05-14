@@ -68,5 +68,7 @@ bool FiniteStateMachine<State_, Character_>::match(Iterable input_string)
     for (const auto& character : input_string) {
 	transition(character);
     }
-    return accept_states_.find(getCurrentState()) != accept_states_.end();
+    auto result = accept_states_.find(getCurrentState()) != accept_states_.end();
+    reset();
+    return result;
 }
