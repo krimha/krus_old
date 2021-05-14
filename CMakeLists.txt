@@ -5,8 +5,9 @@ project(ParseLib)
 set(CMAKE_CXX_STANDARD 17)
 
 add_library(parselib 
-    src/factorial.cpp
-    include/factorial.h
+    src/finite_state_machine.cpp
+
+    include/parselib/finite_state_machine.h
     )
 target_include_directories(parselib PUBLIC include)
 
