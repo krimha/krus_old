@@ -2,7 +2,7 @@
 #include <parselib/finite_state_machine.h>
 
 
-TEST_CASE( "Create finite state machine" )
+TEST_CASE( "Finite state machine" )
 {
     using DFA = FiniteStateMachine<std::string, char>;
     DFA::StateSet states = {"q1", "q2", "q3"};
@@ -19,10 +19,46 @@ TEST_CASE( "Create finite state machine" )
 
     DFA machine{ states, alpha, func, start_state, accept_states };
 
-    REQUIRE(machine.getStates() == states);
-    REQUIRE(machine.getAlphabet() ==  alpha);
-    REQUIRE(machine.getTransFunc() ==  func);
-    REQUIRE(machine.getStartState() ==  start_state);
-    REQUIRE(machine.getAcceptStates() == accept_states);
-    REQUIRE(machine.getCurrentState() == start_state);
+    SECTION ("Check that initialization works")
+    {
+	REQUIRE(machine.getStates() == states);
+	REQUIRE(machine.getAlphabet() ==  alpha);
+	REQUIRE(machine.getTransFunc() ==  func);
+	REQUIRE(machine.getStartState() ==  start_state);
+	REQUIRE(machine.getAcceptStates() == accept_states);
+	REQUIRE(machine.getCurrentState() == start_state);
+    }
+
+    SECTION ("Test setState")
+    {
+	machine.setState("q3");
+	REQUIRE(machine.getCurrentState() == "q3");
+    }
+
+    SECTION ("Test reset")
+    {
+	machine.setState("q3");
+	machine.reset();
+	REQUIRE(machine.getCurrentState() == start_state);
+    }
+
+    SECTION ("Test transition")
+    {
+	REQUIRE(machine.getCurrentState() == start_state);
+	machine.transition('0');
+	REQUIRE(machine.getCurrentState() == start_state);
+	machine.transition('1');
+	REQUIRE(machine.getCurrentState() == "q2");
+	machine.transition('1');
+	REQUIRE(machine.getCurrentState() == "q2");
+	machine.transition('0');
+	REQUIRE(machine.getCurrentState() == "q3");
+	machine.transition('0');
+	REQUIRE(machine.getCurrentState() == "q2");
+    }
+
+
+
+
 }
+
