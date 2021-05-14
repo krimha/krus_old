@@ -35,6 +35,8 @@ public:
 
     State getCurrentState() { return current_state_; };
 
+    void transition(const Character& character);
+
 private:
     StateSet states_;
     Alphabet alphabet_;
@@ -44,3 +46,6 @@ private:
 
     State current_state_;
 };
+
+
+

@@ -19,10 +19,10 @@ TEST_CASE( "Create finite state machine" )
 
     DFA machine{ states, alpha, func, start_state, accept_states };
 
-    CHECK(machine.getStates() == states);
-    CHECK(machine.getAlphabet() ==  alpha);
-    CHECK(machine.getTransFunc() ==  func);
-    CHECK(machine.getStartState() ==  start_state);
-    CHECK(machine.getAcceptStates() == accept_states);
-    CHECK(machine.getCurrentState() == start_state);
+    REQUIRE(machine.getStates() == states);
+    REQUIRE(machine.getAlphabet() ==  alpha);
+    REQUIRE(machine.getTransFunc() ==  func);
+    REQUIRE(machine.getStartState() ==  start_state);
+    REQUIRE(machine.getAcceptStates() == accept_states);
+    REQUIRE(machine.getCurrentState() == start_state);
 }
