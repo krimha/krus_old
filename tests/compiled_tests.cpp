@@ -1,5 +1,5 @@
 #include <catch2/catch.hpp>
-#include <parselib/finite_state_machine.h>
+#include <krus/finite_state_machine.h>
 
 
 TEST_CASE( "Finite state machine basics" )

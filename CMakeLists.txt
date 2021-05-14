@@ -1,15 +1,15 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(ParseLib)
+project(Krus)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_library(parselib 
+add_library(krus 
     src/finite_state_machine.cpp
 
-    include/parselib/finite_state_machine.h
+    include/krus/finite_state_machine.h
     )
-target_include_directories(parselib PUBLIC include)
+target_include_directories(krus PUBLIC include)
 
 add_subdirectory(lib/Catch2)
 
@@ -23,7 +23,7 @@ target_link_libraries(test_prog
     PUBLIC
     test_main
     Catch2::Catch2
-    parselib
+    krus
     )
 
 
