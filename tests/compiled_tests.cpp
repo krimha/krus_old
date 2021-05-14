@@ -24,4 +24,5 @@ TEST_CASE( "Create finite state machine" )
     CHECK(machine.getTransFunc() ==  func);
     CHECK(machine.getStartState() ==  start_state);
     CHECK(machine.getAcceptStates() == accept_states);
+    CHECK(machine.getCurrentState() == start_state);
 }

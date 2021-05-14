@@ -9,6 +9,7 @@ public:
     using Character = Character_;
     using StateSet = std::unordered_set<State>;
     using Alphabet = std::unordered_set<Character>;
+
     // TODO: Would like to use unordered_map here, but will need to define a hash function for std::pair
     using TransitionFunction = std::map<std::pair<State,Character>,State>;
     FiniteStateMachine(
@@ -23,14 +24,16 @@ public:
 	, f_{f} 
 	, start_state_{start_state} 
 	, accept_states_{accept_states} 
+	, current_state_{start_state}
     {};
 
     StateSet getStates() { return states_; }
     Alphabet getAlphabet() { return alphabet_; };
     TransitionFunction getTransFunc() { return f_; };
     State getStartState() { return start_state_; };
-    StateSet getAcceptStates() {return accept_states_; };
+    StateSet getAcceptStates() { return accept_states_; };
 
+    State getCurrentState() { return current_state_; };
 
 private:
     StateSet states_;
@@ -39,5 +42,5 @@ private:
     State start_state_;
     StateSet accept_states_;
 
-
+    State current_state_;
 };
