@@ -40,6 +40,9 @@ public:
 
     void transition(Character character);
 
+    template<typename Iterable>
+    bool match(Iterable input_string);
+
 
 private:
     StateSet states_;
@@ -56,4 +59,14 @@ template<typename State_, typename Character_>
 void FiniteStateMachine<State_,Character_>::transition(Character_ character) 
 {
     setState(transition_function_[std::pair(getCurrentState(), character)]);
+}
+
+template<typename State_, typename Character_>
+template<typename Iterable>
+bool FiniteStateMachine<State_, Character_>::match(Iterable input_string)
+{
+    for (const auto& character : input_string) {
+	transition(character);
+    }
+    return accept_states_.find(getCurrentState()) != accept_states_.end();
 }

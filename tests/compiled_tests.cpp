@@ -55,8 +55,15 @@ TEST_CASE( "Finite state machine" )
 	REQUIRE(machine.getCurrentState() == "q3");
 	machine.transition('0');
 	REQUIRE(machine.getCurrentState() == "q2");
+
     }
 
+    SECTION ("Test match")
+    {
+	REQUIRE(machine.match(std::string{"1101"}) == true );
+	REQUIRE(machine.match(std::string{"110"})  == false);
+	REQUIRE(machine.match(std::string{"1"})  == true);
+    }
 
 
 
