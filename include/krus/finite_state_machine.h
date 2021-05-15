@@ -43,6 +43,8 @@ public:
     template<typename Iterable>
     bool match(Iterable input_string);
 
+    bool verify();
+
 
 private:
     StateSet states_;
@@ -71,4 +73,26 @@ bool FiniteStateMachine<State_, Character_>::match(Iterable input_string)
     auto result = accept_states_.find(getCurrentState()) != accept_states_.end();
     reset();
     return result;
+}
+
+
+// Assumes that we don't need to verify the accept states
+template<typename State_, typename Character_>
+bool FiniteStateMachine<State_,Character_>::verify()
+{
+    // Check that the transition function handles all combinations of symbols and states
+    for (const auto& state : getStates()) {
+	for (const auto& symbol : getAlphabet()) {
+	    if (transition_function_.find({ state , symbol}) == transition_function_.end())
+		return false;
+	}
+    }
+
+    // Start state is not valid
+    if (states_.find(start_state_) == states_.end()) {
+	return false;
+    }
+
+
+    return true;
 }

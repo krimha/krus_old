@@ -68,8 +68,37 @@ TEST_CASE( "Finite state machine basics" )
 	REQUIRE(machine.match(std::string{"1"})  == true);
 	REQUIRE(machine.getCurrentState() == start_state);
     }
+    
+    SECTION("Test valid")
+    {
+	REQUIRE(machine.verify());
+    }
 
+
+    SECTION ("Missing arrow")
+    {
+	// {{{"q1", '0'}, "q1"}
+	func.erase(func.begin());
+	DFA machine{ states, alpha, func, start_state, accept_states };
+
+	REQUIRE( machine.verify() == false );
+    }
+
+    // This test is  pretty much the same
+    SECTION ("Extra alphabet char")
+    {
+	alpha.insert('x');
+	DFA machine{ states, alpha, func, start_state, accept_states };
+
+	REQUIRE( machine.verify() == false );
+    }
+
+    SECTION ("Start state not in state")
+    {
+	DFA machine{ states, alpha, func, "q_error", accept_states };
+
+	REQUIRE( machine.verify() == false );
+    }
 
 
 }
-
