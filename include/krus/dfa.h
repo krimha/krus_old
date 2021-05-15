@@ -1,5 +1,5 @@
 #pragma once
-#include <unordered_set>
+#include <vector>
 #include <map>
 
 template<typename State_, typename Character_>
@@ -7,8 +7,8 @@ class DeterministicFiniteAutomaton {
 public:
     using State = State_;
     using Character = Character_;
-    using StateSet = std::unordered_set<State>;
-    using Alphabet = std::unordered_set<Character>;
+    using StateSet = std::vector<State>;
+    using Alphabet = std::vector<Character>;
 
     // TODO: Would like to use unordered_map here, but will need to define a hash function for std::pair
     using TransitionFunction = std::map<std::pair<State,Character>,State>;
@@ -70,7 +70,11 @@ bool DeterministicFiniteAutomaton<State_, Character_>::match(Iterable input_stri
     for (const auto& character : input_string) {
 	transition(character);
     }
-    auto result = accept_states_.find(getCurrentState()) != accept_states_.end();
+
+    auto it = std::find(accept_states_.begin(), accept_states_.end(), getCurrentState());
+    auto result = it != accept_states_.end();
+    /* auto result = accept_states_.find(getCurrentState()) != accept_states_.end(); */
+
     reset();
     return result;
 }
@@ -90,9 +94,12 @@ bool DeterministicFiniteAutomaton<State_,Character_>::verify()
     }
 
     // Start state is not valid
-    if (states_.find(start_state_) == states_.end()) {
+    if (std::find(states_.begin(), states_.end(), start_state_) == states_.end())
 	return false;
-    }
+
+    // if (states_.find(start_state_) == states_.end()) {
+    //     return false;
+    // }
 
 
     return true;

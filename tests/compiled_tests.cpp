@@ -88,7 +88,7 @@ TEST_CASE( "Deterministic finite state machine tests" )
     // This test is  pretty much the same
     SECTION ("Extra alphabet char")
     {
-	alpha.insert('x');
+	alpha.push_back('x');
 	DFA machine{ states, alpha, func, start_state, accept_states };
 
 	REQUIRE( machine.verify() == false );
@@ -128,4 +128,57 @@ TEST_CASE( "Nondeterministic finite state machine tests" )
 	REQUIRE(machine.getStartState() ==  start_state);
 	REQUIRE(machine.getAcceptStates() == accept_states);
     }
+}
+
+TEST_CASE ("nondeterminsitic with non-string type")
+{
+    using NFA = NondeterministicFiniteAutomaton<std::string, int>;
+    NFA::StateSet states = {"q1", "q2", "q3"};
+    NFA::Alphabet alpha  = { 0, 1 };
+    NFA::TransitionFunction func =  
+	{{{"q1", 0}, {"q1"}}
+	,{{"q1", 1}, {"q2"}}
+	,{{"q2", 0}, {"q3"}}
+	,{{"q2", 1}, {"q2"}}
+	,{{"q3", 0}, {"q2"}}
+	,{{"q3", 1}, {"q2"}}};
+    NFA::State start_state = "q1";
+    NFA::StateSet accept_states = {"q2"};
+
+    REQUIRE_THROWS(NFA{ states, alpha, func, start_state, accept_states });
+}
+
+TEST_CASE ( "Test nondeterministic finite state machine" )
+{
+    using NFA = NondeterministicFiniteAutomaton<std::string, char>;
+    NFA::StateSet states = {"q1", "q2", "q3"};
+    NFA::Alphabet alpha  = { 'a', 'b' };
+    NFA::TransitionFunction func =  
+    { {{"q1",  'b'}, {"q2"}},
+      {{"q1", '\0'}, {"q3"}},
+      {{"q2",  'a'}, {"q2", "q3"}},
+      {{"q2",  'b'}, {"q3"}},
+      {{"q3",  'a'}, {"q1"}} };
+    NFA::State start_state = "q1";
+    NFA::StateSet accept_states = {"q1"};
+
+    NFA nfa { states, alpha, func, start_state, accept_states };
+
+    auto dfa = nfa.asDFA();
+
+    //REQUIRE(dfa.verify());
+
+    // If the NFA has k states, the equivalent DFA has 2^k states
+    //size_t k = nfa.getStates().size();
+    //REQUIRE(dfa.getStates().size() == (1 << k));
+
+
+    //REQUIRE(dfa.match(std::string("")));
+    //REQUIRE(dfa.match(std::string("a")));
+    //REQUIRE(dfa.match(std::string("baba")));
+    //REQUIRE(dfa.match(std::string("baa")));
+
+    //REQUIRE_FALSE(dfa.match(std::string("b")));
+    //REQUIRE_FALSE(dfa.match(std::string("bb")));
+    //REQUIRE_FALSE(dfa.match(std::string("babba")));
 }
