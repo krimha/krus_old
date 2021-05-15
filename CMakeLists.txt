@@ -5,7 +5,9 @@ project(Krus)
 set(CMAKE_CXX_STANDARD 17)
 
 add_library(krus 
-    include/krus/dfa.h)
+    include/krus/dfa.h
+    include/krus/nfa.h
+    )
 set_target_properties(krus PROPERTIES LINKER_LANGUAGE CXX)
 
 # Interface due to being header-only

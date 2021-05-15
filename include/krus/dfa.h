@@ -77,6 +77,7 @@ bool DeterministicFiniteAutomaton<State_, Character_>::match(Iterable input_stri
 
 
 // Assumes that we don't need to verify the accept states
+// TODO Check that all mentioned symbols are in alphabet, and all mentioned states are in states
 template<typename State_, typename Character_>
 bool DeterministicFiniteAutomaton<State_,Character_>::verify()
 {

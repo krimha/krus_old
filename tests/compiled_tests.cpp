@@ -1,8 +1,9 @@
 #include <catch2/catch.hpp>
 #include <krus/dfa.h>
+#include <krus/nfa.h>
 
 
-TEST_CASE( "Finite state machine basics" )
+TEST_CASE( "Deterministic finite state machine tests" )
 {
     using DFA = DeterministicFiniteAutomaton<std::string, char>;
     DFA::StateSet states = {"q1", "q2", "q3"};
@@ -99,6 +100,32 @@ TEST_CASE( "Finite state machine basics" )
 
 	REQUIRE( machine.verify() == false );
     }
+}
 
 
+TEST_CASE( "Nondeterministic finite state machine tests" )
+{
+    using NFA = NondeterministicFiniteAutomaton<std::string, char>;
+    NFA::StateSet states = {"q1", "q2", "q3"};
+    NFA::Alphabet alpha  = { '0', '1' };
+    NFA::TransitionFunction func =  
+	{{{"q1", '0'}, {"q1"}}
+	,{{"q1", '1'}, {"q2"}}
+	,{{"q2", '0'}, {"q3"}}
+	,{{"q2", '1'}, {"q2"}}
+	,{{"q3", '0'}, {"q2"}}
+	,{{"q3", '1'}, {"q2"}}};
+    NFA::State start_state = "q1";
+    NFA::StateSet accept_states = {"q2"};
+
+    NFA machine{ states, alpha, func, start_state, accept_states };
+
+    SECTION ("Check that initialization works")
+    {
+	REQUIRE(machine.getStates() == states);
+	REQUIRE(machine.getAlphabet() ==  alpha);
+	REQUIRE(machine.getTransFunc() ==  func);
+	REQUIRE(machine.getStartState() ==  start_state);
+	REQUIRE(machine.getAcceptStates() == accept_states);
+    }
 }
