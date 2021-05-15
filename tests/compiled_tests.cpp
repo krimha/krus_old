@@ -1,10 +1,10 @@
 #include <catch2/catch.hpp>
-#include <krus/finite_state_machine.h>
+#include <krus/dfa.h>
 
 
 TEST_CASE( "Finite state machine basics" )
 {
-    using DFA = FiniteStateMachine<std::string, char>;
+    using DFA = DeterministicFiniteAutomaton<std::string, char>;
     DFA::StateSet states = {"q1", "q2", "q3"};
     DFA::Alphabet alpha  = { '0', '1' };
     DFA::TransitionFunction func =  

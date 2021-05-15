@@ -3,7 +3,7 @@
 #include <map>
 
 template<typename State_, typename Character_>
-class FiniteStateMachine {
+class DeterministicFiniteAutomaton {
 public:
     using State = State_;
     using Character = Character_;
@@ -12,7 +12,7 @@ public:
 
     // TODO: Would like to use unordered_map here, but will need to define a hash function for std::pair
     using TransitionFunction = std::map<std::pair<State,Character>,State>;
-    FiniteStateMachine(
+    DeterministicFiniteAutomaton(
 	    StateSet states,
 	    Alphabet alphabet,
 	    TransitionFunction f,
@@ -58,14 +58,14 @@ private:
 
 // TODO: Check that the input character is valid
 template<typename State_, typename Character_>
-void FiniteStateMachine<State_,Character_>::transition(Character_ character) 
+void DeterministicFiniteAutomaton<State_,Character_>::transition(Character_ character) 
 {
     setState(transition_function_[std::pair(getCurrentState(), character)]);
 }
 
 template<typename State_, typename Character_>
 template<typename Iterable>
-bool FiniteStateMachine<State_, Character_>::match(Iterable input_string)
+bool DeterministicFiniteAutomaton<State_, Character_>::match(Iterable input_string)
 {
     for (const auto& character : input_string) {
 	transition(character);
@@ -78,7 +78,7 @@ bool FiniteStateMachine<State_, Character_>::match(Iterable input_string)
 
 // Assumes that we don't need to verify the accept states
 template<typename State_, typename Character_>
-bool FiniteStateMachine<State_,Character_>::verify()
+bool DeterministicFiniteAutomaton<State_,Character_>::verify()
 {
     // Check that the transition function handles all combinations of symbols and states
     for (const auto& state : getStates()) {

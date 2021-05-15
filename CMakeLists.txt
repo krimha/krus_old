@@ -5,11 +5,12 @@ project(Krus)
 set(CMAKE_CXX_STANDARD 17)
 
 add_library(krus 
-    src/finite_state_machine.cpp
+    include/krus/dfa.h)
+set_target_properties(krus PROPERTIES LINKER_LANGUAGE CXX)
 
-    include/krus/finite_state_machine.h
-    )
-target_include_directories(krus PUBLIC include)
+# Interface due to being header-only
+# Not buildable as a target
+target_include_directories(krus INTERFACE include)
 
 add_subdirectory(lib/Catch2)
 
