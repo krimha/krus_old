@@ -10,7 +10,7 @@ void StateWrapper::insert(std::string str)
 }
 
 
-std::string StateWrapper::str()
+std::string StateWrapper::str() const
 {
     return iter_str(set);
 }

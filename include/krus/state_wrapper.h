@@ -8,7 +8,7 @@ public:
 
     void insert(std::string str);
     std::set<State> getSet() const { return set; }
-    std::string str();
+    std::string str() const;
     
 private:
     std::set<State> set;
