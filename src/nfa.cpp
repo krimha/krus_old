@@ -1,5 +1,7 @@
+#include <set>
 #include <krus/nfa.h>
 #include <krus/dfa.h>
+
 
 DeterministicFiniteAutomaton NondeterministicFiniteAutomaton::asDFA()
 {
@@ -44,9 +46,34 @@ DeterministicFiniteAutomaton NondeterministicFiniteAutomaton::asDFA()
 
     // Construct most basic transition function
     DeterministicFiniteAutomaton::TransitionFunction f;
-    for (const auto& state : power_set_as_strings) {
+
+    for (size_t i=0; i < power_set.size(); ++i) {
+	const auto& state = power_set[i];
+	const auto& state_str = power_set_as_strings[i];
+
 	for (const auto& symbol : getAlphabet()) {
-	    f.insert({{state, symbol}, state});
+	    std::set<State> all_candidates;
+
+	    for (const auto& r : state) {
+		for (const auto& s : transition_function_[std::make_pair(r,symbol)]) {
+		    all_candidates.insert(s);
+		}
+	    }
+
+	    std::vector<State> all_candidates_vec;
+	    for (const auto& x : all_candidates) {
+		all_candidates_vec.push_back(x);
+	    }
+
+	    std::sort(all_candidates_vec.begin(), all_candidates_vec.end());
+
+	    std::stringstream ss;
+	    ss << "{ ";
+	    for (const auto& x : all_candidates_vec) {
+		ss << x << ' ';
+	    }	
+	    ss << '}';
+	    f.insert({{state_str, symbol}, ss.str()});
 	}
     }
 

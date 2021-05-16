@@ -161,9 +161,9 @@ TEST_CASE ( "Test nondeterministic finite state machine" )
     REQUIRE(dfa.getAcceptStates().size() == 4);
 
     REQUIRE(dfa.match(std::string("")));
-    //REQUIRE(dfa.match(std::string("a")));
-    //REQUIRE(dfa.match(std::string("baba")));
-    //REQUIRE(dfa.match(std::string("baa")));
+    /* REQUIRE(dfa.match(std::string("a"))); */
+    REQUIRE(dfa.match(std::string("baba")));
+    REQUIRE(dfa.match(std::string("baa")));
 
     //REQUIRE_FALSE(dfa.match(std::string("b")));
     //REQUIRE_FALSE(dfa.match(std::string("bb")));
