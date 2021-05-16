@@ -128,7 +128,7 @@ DeterministicFiniteAutomaton NondeterministicFiniteAutomaton::asDFA()
 	}
     }
 
-    std::vector<State> start_state;
+    std::vector<State> start_state{getStartState()};
     for (const auto& state : E[getStartState()]) {
 	start_state.push_back(state);
     }
@@ -140,6 +140,7 @@ DeterministicFiniteAutomaton NondeterministicFiniteAutomaton::asDFA()
     }
     ss << '}';
     auto start_state_str = ss.str();
+    std::cout << "start state is " << start_state_str << '\n';
 
 
     return DeterministicFiniteAutomaton {
