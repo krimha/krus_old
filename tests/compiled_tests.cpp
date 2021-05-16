@@ -166,12 +166,13 @@ TEST_CASE ( "Test nondeterministic finite state machine" )
 
     auto dfa = nfa.asDFA();
 
-    //REQUIRE(dfa.verify());
+    REQUIRE(dfa.verify());
+    //REQUIRE(dfa.getStartState() == std::vector{nfa.getStartState()});
+    //REQUIRE(dfa.getAlphabet() == alpha);
 
-    // If the NFA has k states, the equivalent DFA has 2^k states
+    //// If the NFA has k states, the equivalent DFA has 2^k states
     //size_t k = nfa.getStates().size();
     //REQUIRE(dfa.getStates().size() == (1 << k));
-
 
     //REQUIRE(dfa.match(std::string("")));
     //REQUIRE(dfa.match(std::string("a")));
