@@ -24,16 +24,7 @@ public:
 	    TransitionFunction f,
 	    State start_state,
 	    StateSet accept_states
-	    ) 
-	: states_{states} 
-	, alphabet_{alphabet} 
-	, transition_function_{f} 
-	, start_state_{start_state} 
-	, accept_states_{accept_states} 
-	, empty_string_{'\0'}
-	{
-
-	};
+	    );
 
     StateSet getStates() { return states_; }
     Alphabet getAlphabet() { return alphabet_; };
@@ -50,5 +41,8 @@ private:
     State start_state_;
     StateSet accept_states_;
     Character empty_string_;
+
+    std::map<State,std::vector<State>> E;
+    TransitionFunction transition_function_no_eps_;
 };
 

@@ -2,6 +2,38 @@
 #include <krus/nfa.h>
 #include <krus/dfa.h>
 
+NondeterministicFiniteAutomaton::NondeterministicFiniteAutomaton(
+	StateSet states,
+	Alphabet alphabet,
+	TransitionFunction f,
+	State start_state,
+	StateSet accept_states)
+    : states_{states} 
+    , alphabet_{alphabet} 
+    , transition_function_{f} 
+    , start_state_{start_state} 
+    , accept_states_{accept_states} 
+    , empty_string_{'\0'}
+{
+
+    // Split up transition function into eps and no eps
+    for (const auto& [k, out] : transition_function_) {
+	std::string in = k.first;
+	char sym = k.second;
+
+	if (sym != empty_string_) {
+	    transition_function_no_eps_.insert({k, out});
+	} else {
+	    // TODO: Should do DFS to fully populate this
+	    
+	    auto out_set = out;
+	    out_set.push_back(in);
+	    E.insert({in, out_set});
+	}
+
+    } 
+    
+};
 
 DeterministicFiniteAutomaton NondeterministicFiniteAutomaton::asDFA()
 {
@@ -55,7 +87,7 @@ DeterministicFiniteAutomaton NondeterministicFiniteAutomaton::asDFA()
 	    std::set<State> all_candidates;
 
 	    for (const auto& r : state) {
-		for (const auto& s : transition_function_[std::make_pair(r,symbol)]) {
+		for (const auto& s : transition_function_no_eps_[std::make_pair(r,symbol)]) {
 		    all_candidates.insert(s);
 		}
 	    }
@@ -96,11 +128,25 @@ DeterministicFiniteAutomaton NondeterministicFiniteAutomaton::asDFA()
 	}
     }
 
+    std::vector<State> start_state;
+    for (const auto& state : E[getStartState()]) {
+	start_state.push_back(state);
+    }
+    std::sort(start_state.begin(), start_state.end());
+    std::stringstream ss;
+    ss << "{ ";
+    for (const auto& state : start_state) {
+	ss << state << ' ';
+    }
+    ss << '}';
+    auto start_state_str = ss.str();
+
+
     return DeterministicFiniteAutomaton {
 	    power_set_as_strings,
 	    getAlphabet(),
 	    f,
-	    "{ " + getStartState() + " }",
+	    start_state_str,	    
 	    accept_states
     };
 }
