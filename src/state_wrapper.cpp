@@ -12,10 +12,5 @@ void StateWrapper::insert(std::string str)
 
 std::string StateWrapper::str()
 {
-    std::vector<std::string> v;
-    for (const auto& x : set) {
-	v.push_back(x);
-    }
-    std::sort(v.begin(), v.end());
-    return iter_str(v);
+    return iter_str(set);
 }

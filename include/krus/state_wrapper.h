@@ -1,15 +1,15 @@
 #pragma once
 #include <string>
-#include <unordered_set>
+#include <set>
 
 class StateWrapper {
 public:
     using State = std::string;
 
     void insert(std::string str);
-    std::unordered_set<State> getSet() const { return set; }
+    std::set<State> getSet() const { return set; }
     std::string str();
     
 private:
-    std::unordered_set<State> set;
+    std::set<State> set;
 };
