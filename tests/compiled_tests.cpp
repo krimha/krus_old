@@ -149,15 +149,18 @@ TEST_CASE ( "Test nondeterministic finite state machine" )
 
     auto dfa = nfa.asDFA();
 
-    /* REQUIRE(dfa.verify()); */
-    //REQUIRE(dfa.getStartState() == std::vector{nfa.getStartState()});
-    //REQUIRE(dfa.getAlphabet() == alpha);
+    REQUIRE(dfa.verify());
+    REQUIRE(dfa.getStartState() == "{ " + nfa.getStartState() + " }");
+    REQUIRE(dfa.getAlphabet() == alpha);
 
-    //// If the NFA has k states, the equivalent DFA has 2^k states
-    //size_t k = nfa.getStates().size();
-    //REQUIRE(dfa.getStates().size() == (1 << k));
+    // If the NFA has k states, the equivalent DFA has 2^k states
+    size_t k = nfa.getStates().size();
+    REQUIRE(dfa.getStates().size() == (1 << k));
 
-    //REQUIRE(dfa.match(std::string("")));
+    // TODO: Should also test that the accept states are valid, but that is difficult with the current implementation
+    REQUIRE(dfa.getAcceptStates().size() == 4);
+
+    REQUIRE(dfa.match(std::string("")));
     //REQUIRE(dfa.match(std::string("a")));
     //REQUIRE(dfa.match(std::string("baba")));
     //REQUIRE(dfa.match(std::string("baa")));

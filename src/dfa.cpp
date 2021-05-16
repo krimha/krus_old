@@ -22,10 +22,5 @@ bool DeterministicFiniteAutomaton::verify()
     if (std::find(states_.begin(), states_.end(), start_state_) == states_.end())
 	return false;
 
-    // if (states_.find(start_state_) == states_.end()) {
-    //     return false;
-    // }
-
-
     return true;
 }
