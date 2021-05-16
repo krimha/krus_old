@@ -1,6 +1,10 @@
 #pragma once
 #include <vector>
 #include <map>
+#include <string>
+#include <algorithm>
+
+
 
 // TODO: Templating. Should currently only acces cases where string string. However, would like e.g. std::set<std::string>. This is difficult, however:
 // - Need a std::set<std::set<std::string>> type, which doesn't seem to be possible without defining a hash function for sets.
@@ -58,12 +62,6 @@ private:
     State current_state_;
 };
 
-// TODO: Check that the input character is valid
-void DeterministicFiniteAutomaton::transition(Character character) 
-{
-    setState(transition_function_[std::pair(getCurrentState(), character)]);
-}
-
 template<typename Iterable>
 bool DeterministicFiniteAutomaton::match(Iterable input_string)
 {
@@ -80,26 +78,3 @@ bool DeterministicFiniteAutomaton::match(Iterable input_string)
 }
 
 
-// Assumes that we don't need to verify the accept states
-// TODO Check that all mentioned symbols are in alphabet, and all mentioned states are in states
-bool DeterministicFiniteAutomaton::verify()
-{
-    // Check that the transition function handles all combinations of symbols and states
-    for (const auto& state : getStates()) {
-	for (const auto& symbol : getAlphabet()) {
-	    if (transition_function_.find({ state , symbol}) == transition_function_.end())
-		return false;
-	}
-    }
-
-    // Start state is not valid
-    if (std::find(states_.begin(), states_.end(), start_state_) == states_.end())
-	return false;
-
-    // if (states_.find(start_state_) == states_.end()) {
-    //     return false;
-    // }
-
-
-    return true;
-}

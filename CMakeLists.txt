@@ -7,12 +7,14 @@ set(CMAKE_CXX_STANDARD 17)
 add_library(krus 
     include/krus/dfa.h
     include/krus/nfa.h
+    src/dfa.cpp
+    src/nfa.cpp
     )
 set_target_properties(krus PROPERTIES LINKER_LANGUAGE CXX)
 
 # Interface due to being header-only
 # Not buildable as a target
-target_include_directories(krus INTERFACE include)
+target_include_directories(krus PUBLIC include)
 
 add_subdirectory(lib/Catch2)
 
