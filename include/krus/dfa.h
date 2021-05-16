@@ -2,11 +2,13 @@
 #include <vector>
 #include <map>
 
-template<typename State_, typename Character_>
+// TODO: Templating. Should currently only acces cases where string string. However, would like e.g. std::set<std::string>. This is difficult, however:
+// - Need a std::set<std::set<std::string>> type, which doesn't seem to be possible without defining a hash function for sets.
+// - lookups in transitionfunction does not seem to work
 class DeterministicFiniteAutomaton {
 public:
-    using State = State_;
-    using Character = Character_;
+    using State = std::string;
+    using Character = char;
     using StateSet = std::vector<State>;
     using Alphabet = std::vector<Character>;
 
@@ -57,15 +59,13 @@ private:
 };
 
 // TODO: Check that the input character is valid
-template<typename State_, typename Character_>
-void DeterministicFiniteAutomaton<State_,Character_>::transition(Character_ character) 
+void DeterministicFiniteAutomaton::transition(Character character) 
 {
     setState(transition_function_[std::pair(getCurrentState(), character)]);
 }
 
-template<typename State_, typename Character_>
 template<typename Iterable>
-bool DeterministicFiniteAutomaton<State_, Character_>::match(Iterable input_string)
+bool DeterministicFiniteAutomaton::match(Iterable input_string)
 {
     for (const auto& character : input_string) {
 	transition(character);
@@ -82,8 +82,7 @@ bool DeterministicFiniteAutomaton<State_, Character_>::match(Iterable input_stri
 
 // Assumes that we don't need to verify the accept states
 // TODO Check that all mentioned symbols are in alphabet, and all mentioned states are in states
-template<typename State_, typename Character_>
-bool DeterministicFiniteAutomaton<State_,Character_>::verify()
+bool DeterministicFiniteAutomaton::verify()
 {
     // Check that the transition function handles all combinations of symbols and states
     for (const auto& state : getStates()) {
