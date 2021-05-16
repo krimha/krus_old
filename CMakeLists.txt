@@ -7,8 +7,11 @@ set(CMAKE_CXX_STANDARD 17)
 add_library(krus 
     include/krus/dfa.h
     include/krus/nfa.h
+    include/krus/utils.h
+    include/krus/state_wrapper.h
     src/dfa.cpp
     src/nfa.cpp
+    src/state_wrapper.cpp
     )
 set_target_properties(krus PROPERTIES LINKER_LANGUAGE CXX)
 

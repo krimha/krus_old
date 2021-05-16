@@ -1,6 +1,7 @@
 #include <set>
 #include <krus/nfa.h>
 #include <krus/dfa.h>
+#include <krus/utils.h>
 
 NondeterministicFiniteAutomaton::NondeterministicFiniteAutomaton(
 	StateSet states,
@@ -67,13 +68,7 @@ DeterministicFiniteAutomaton NondeterministicFiniteAutomaton::asDFA()
     DeterministicFiniteAutomaton::StateSet power_set_as_strings;
 
     for (const auto& set : power_set) {
-	std::stringstream ss;
-	ss << "{ ";
-	for (const auto& x : set) {
-	    ss << x << ' ';
-	}	
-	ss << '}';
-	power_set_as_strings.emplace_back(ss.str());
+	power_set_as_strings.emplace_back(iter_str(set));
     }
 
     // Construct most basic transition function
@@ -98,14 +93,7 @@ DeterministicFiniteAutomaton NondeterministicFiniteAutomaton::asDFA()
 	    }
 
 	    std::sort(all_candidates_vec.begin(), all_candidates_vec.end());
-
-	    std::stringstream ss;
-	    ss << "{ ";
-	    for (const auto& x : all_candidates_vec) {
-		ss << x << ' ';
-	    }	
-	    ss << '}';
-	    f.insert({{state_str, symbol}, ss.str()});
+	    f.insert({{state_str, symbol}, iter_str(all_candidates_vec)});
 	}
     }
 
@@ -117,12 +105,7 @@ DeterministicFiniteAutomaton NondeterministicFiniteAutomaton::asDFA()
 	    if (std::find(set.begin(), set.end(), accept_state) != set.end()) {
 		// Assume that the set is sorted. Might potentially run into issues with e.g.
 		// { q1, q2 } and { q2, q1 } not being equal.
-		std::stringstream ss;
-		ss << "{ ";
-		for (const auto& x : set)
-		    ss << x << ' ';
-		ss << '}';
-		accept_states.emplace_back(ss.str());
+		accept_states.emplace_back(iter_str(set));
 		break;
 	    }
 	}
@@ -133,13 +116,7 @@ DeterministicFiniteAutomaton NondeterministicFiniteAutomaton::asDFA()
 	start_state.push_back(state);
     }
     std::sort(start_state.begin(), start_state.end());
-    std::stringstream ss;
-    ss << "{ ";
-    for (const auto& state : start_state) {
-	ss << state << ' ';
-    }
-    ss << '}';
-    auto start_state_str = ss.str();
+    auto start_state_str = iter_str(start_state);
     std::cout << "start state is " << start_state_str << '\n';
 
 
