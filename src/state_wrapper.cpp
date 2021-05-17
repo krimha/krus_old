@@ -14,3 +14,10 @@ std::string StateWrapper::str() const
 {
     return iter_str(set);
 }
+
+bool StateWrapper::contains(const State &state) const
+{
+    if (set.find(state) == set.end())
+	return false;
+    return true;
+}

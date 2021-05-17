@@ -66,52 +66,25 @@ DeterministicFiniteAutomaton NondeterministicFiniteAutomaton::asDFA()
     }
 
 
-    /* // Get string representation of power set elements */
-    /* DeterministicFiniteAutomaton::StateSet power_set_as_strings; */
+    // Construct most basic transition function
+    DeterministicFiniteAutomaton::TransitionFunction transition_function;
+    for (const auto& state : power_set) {
+	for (const auto& symbol : getAlphabet()) {
+	    auto state_str = state.str();
+	    transition_function.insert({{state_str, symbol}, {state_str}});
+	}
+    }
 
-    /* for (const auto& set : power_set) { */
-	/* power_set_as_strings.emplace_back(iter_str(set)); */
-    /* } */
-
-    /* // Construct most basic transition function */
-    /* DeterministicFiniteAutomaton::TransitionFunction f; */
-
-    /* for (size_t i=0; i < power_set.size(); ++i) { */
-	/* const auto& state = power_set[i]; */
-	/* const auto& state_str = power_set_as_strings[i]; */
-
-	/* for (const auto& symbol : getAlphabet()) { */
-	    /* std::set<State> all_candidates; */
-
-	    /* for (const auto& r : state) { */
-		/* for (const auto& s : transition_function_no_eps_[std::make_pair(r,symbol)]) { */
-		    /* all_candidates.insert(s); */
-		/* } */
-	    /* } */
-
-	    /* std::vector<State> all_candidates_vec; */
-	    /* for (const auto& x : all_candidates) { */
-		/* all_candidates_vec.push_back(x); */
-	    /* } */
-
-	    /* std::sort(all_candidates_vec.begin(), all_candidates_vec.end()); */
-	    /* f.insert({{state_str, symbol}, iter_str(all_candidates_vec)}); */
-	/* } */
-    /* } */
-
-    /* // Find accept state */
-    /* DeterministicFiniteAutomaton::StateSet accept_states; */
-    /* for (const auto& set : power_set) { */
-	/* for (const auto& accept_state : getAcceptStates()) { */
-	    /* // The current subset contains an accept state for the original set */
-	    /* if (std::find(set.begin(), set.end(), accept_state) != set.end()) { */
-		/* // Assume that the set is sorted. Might potentially run into issues with e.g. */
-		/* // { q1, q2 } and { q2, q1 } not being equal. */
-		/* accept_states.emplace_back(iter_str(set)); */
-		/* break; */
-	    /* } */
-	/* } */
-    /* } */
+    // Find accept state. i.e. all subsets that contain an accept state of the NFA
+    std::vector<StateWrapper> accept_states;
+    for (const auto& subset : power_set) {
+	for (const auto& accept_state : getAcceptStates()) {
+	    if (subset.contains(accept_state)) {
+		accept_states.emplace_back(subset);
+		break; // only need to find one in each.
+	    }
+	}
+    }
 
     /* std::vector<State> start_state{getStartState()}; */
     /* for (const auto& state : E[getStartState()]) { */
@@ -134,6 +107,12 @@ DeterministicFiniteAutomaton NondeterministicFiniteAutomaton::asDFA()
     for (const auto& state : power_set ) {
 	power_set_as_strings.emplace_back(state.str());
     }
+
+    std::vector<std::string> accept_states_as_strings;
+    for (const auto& state : accept_states ) {
+	accept_states_as_strings.emplace_back(state.str());
+    }
+
 
     return DeterministicFiniteAutomaton {
 	power_set_as_strings,
