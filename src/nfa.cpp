@@ -119,6 +119,6 @@ DeterministicFiniteAutomaton NondeterministicFiniteAutomaton::asDFA()
 	getAlphabet(),
 	{},
 	"",
-	{},
+	accept_states_as_strings
     };
 }
