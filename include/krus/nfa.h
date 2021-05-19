@@ -1,5 +1,6 @@
 #pragma once
 #include <map>
+#include <set>
 #include <iostream>
 #include <vector>
 #include <sstream>
@@ -42,7 +43,7 @@ private:
     StateSet accept_states_;
     Character empty_string_;
 
-    std::map<State,std::vector<State>> E;
+    std::map<State,std::set<State>> eps_reachable;
     TransitionFunction transition_function_no_eps_;
 };
 

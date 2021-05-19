@@ -5,6 +5,12 @@
 #include <algorithm>
 
 
+enum class Status {
+    TRANSITION_FUNCTION,
+    START_STATE,
+    OK
+};
+
 
 // TODO: Templating. Should currently only acces cases where string string. However, would like e.g. std::set<std::string>. This is difficult, however:
 // - Need a std::set<std::set<std::string>> type, which doesn't seem to be possible without defining a hash function for sets.
@@ -18,6 +24,8 @@ public:
 
     // TODO: Would like to use unordered_map here, but will need to define a hash function for std::pair
     using TransitionFunction = std::map<std::pair<State,Character>,State>;
+
+
     DeterministicFiniteAutomaton(
 	    StateSet states,
 	    Alphabet alphabet,
@@ -49,7 +57,7 @@ public:
     template<typename Iterable>
     bool match(Iterable input_string);
 
-    bool verify();
+    Status verify();
 
 
 private:

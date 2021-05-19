@@ -73,7 +73,7 @@ TEST_CASE( "Deterministic finite state machine tests" )
     
     SECTION("Test valid")
     {
-	REQUIRE(machine.verify());
+	REQUIRE(machine.verify() == Status::OK);
     }
 
 
@@ -83,7 +83,7 @@ TEST_CASE( "Deterministic finite state machine tests" )
 	func.erase(func.begin());
 	DFA machine{ states, alpha, func, start_state, accept_states };
 
-	REQUIRE( machine.verify() == false );
+	REQUIRE( machine.verify() == Status::TRANSITION_FUNCTION );
     }
 
     // This test is  pretty much the same
@@ -92,14 +92,14 @@ TEST_CASE( "Deterministic finite state machine tests" )
 	alpha.push_back('x');
 	DFA machine{ states, alpha, func, start_state, accept_states };
 
-	REQUIRE( machine.verify() == false );
+	REQUIRE( machine.verify() == Status::TRANSITION_FUNCTION );
     }
 
     SECTION ("Start state not in state")
     {
 	DFA machine{ states, alpha, func, "q_error", accept_states };
 
-	REQUIRE( machine.verify() == false );
+	REQUIRE( machine.verify() == Status::START_STATE );
     }
 }
 
@@ -150,7 +150,7 @@ TEST_CASE ( "Test nondeterministic finite state machine" )
 
     auto dfa = nfa.asDFA();
 
-    // REQUIRE(dfa.verify());
+    REQUIRE(dfa.verify() == Status::OK);
     // REQUIRE(dfa.getStartState() == "{ q1 q3 }");
     REQUIRE(dfa.getAlphabet() == alpha);
 
@@ -190,5 +190,12 @@ TEST_CASE ("Test StateWrapper")
 
 	REQUIRE(s.str() == "{ q1 q2 q3 }");
     }
+
+    SECTION ("Empty set")
+    {
+	StateWrapper s;
+	REQUIRE(s.str() == "{ }");
+    }
+
 
 }

@@ -30,7 +30,11 @@ NondeterministicFiniteAutomaton::NondeterministicFiniteAutomaton(
 	    
 	    auto out_set = out;
 	    out_set.push_back(in);
-	    E.insert({in, out_set});
+
+	    eps_reachable.insert({in, {}});
+	    for (const auto& x : out_set) {
+		eps_reachable[in].insert(in);
+	    }
 	}
 
     } 
@@ -65,6 +69,7 @@ DeterministicFiniteAutomaton NondeterministicFiniteAutomaton::asDFA()
 	power_set.push_back(current_set);
     }
 
+    // Determine which states are reachable by walking across eps-arrows
 
     // Construct most basic transition function
     DeterministicFiniteAutomaton::TransitionFunction transition_function;
@@ -74,6 +79,7 @@ DeterministicFiniteAutomaton NondeterministicFiniteAutomaton::asDFA()
 	    transition_function.insert({{state_str, symbol}, {state_str}});
 	}
     }
+
 
     // Find accept state. i.e. all subsets that contain an accept state of the NFA
     std::vector<StateWrapper> accept_states;
@@ -86,23 +92,7 @@ DeterministicFiniteAutomaton NondeterministicFiniteAutomaton::asDFA()
 	}
     }
 
-    /* std::vector<State> start_state{getStartState()}; */
-    /* for (const auto& state : E[getStartState()]) { */
-	/* start_state.push_back(state); */
-    /* } */
-    /* std::sort(start_state.begin(), start_state.end()); */
-    /* auto start_state_str = iter_str(start_state); */
-    /* std::cout << "start state is " << start_state_str << '\n'; */
-
-
-    /* return DeterministicFiniteAutomaton { */
-	    /* power_set_as_strings, */
-	    /* getAlphabet(), */
-	    /* f, */
-	    /* start_state_str, */	    
-	    /* accept_states */
-    /* }; */
-
+    // Convert to strings
     std::vector<std::string> power_set_as_strings;
     for (const auto& state : power_set ) {
 	power_set_as_strings.emplace_back(state.str());
@@ -117,8 +107,8 @@ DeterministicFiniteAutomaton NondeterministicFiniteAutomaton::asDFA()
     return DeterministicFiniteAutomaton {
 	power_set_as_strings,
 	getAlphabet(),
-	{},
-	"",
+	transition_function,
+	"{ q1 q3 }",
 	accept_states_as_strings
     };
 }
