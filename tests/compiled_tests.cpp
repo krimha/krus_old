@@ -28,47 +28,14 @@ TEST_CASE( "Deterministic finite state machine tests" )
 	REQUIRE(machine.getTransFunc() ==  func);
 	REQUIRE(machine.getStartState() ==  start_state);
 	REQUIRE(machine.getAcceptStates() == accept_states);
-	REQUIRE(machine.getCurrentState() == start_state);
-    }
-
-    SECTION ("Test setState")
-    {
-	machine.setState("q3");
-	REQUIRE(machine.getCurrentState() == "q3");
-    }
-
-    SECTION ("Test reset")
-    {
-	machine.setState("q3");
-	machine.reset();
-	REQUIRE(machine.getCurrentState() == start_state);
-    }
-
-    SECTION ("Test transition")
-    {
-	REQUIRE(machine.getCurrentState() == start_state);
-	machine.transition('0');
-	REQUIRE(machine.getCurrentState() == start_state);
-	machine.transition('1');
-	REQUIRE(machine.getCurrentState() == "q2");
-	machine.transition('1');
-	REQUIRE(machine.getCurrentState() == "q2");
-	machine.transition('0');
-	REQUIRE(machine.getCurrentState() == "q3");
-	machine.transition('0');
-	REQUIRE(machine.getCurrentState() == "q2");
-
     }
 
     SECTION ("Test match")
     {
 	REQUIRE(machine.match(std::string{"1101"}) == true );
-	// Test that it is reset
-	REQUIRE(machine.getCurrentState() == start_state);
+	// Test that no state is stored between calls
 	REQUIRE(machine.match(std::string{"110"})  == false);
-	REQUIRE(machine.getCurrentState() == start_state);
 	REQUIRE(machine.match(std::string{"1"})  == true);
-	REQUIRE(machine.getCurrentState() == start_state);
     }
     
     SECTION("Test valid")

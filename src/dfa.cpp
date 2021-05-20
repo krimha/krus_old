@@ -1,10 +1,4 @@
 #include <krus/dfa.h>
-// TODO: Check that the input character is valid
-void DeterministicFiniteAutomaton::transition(Character character) 
-{
-    setState(transition_function_[std::pair(getCurrentState(), character)]);
-}
-
 
 // Assumes that we don't need to verify the accept states
 // TODO Check that all mentioned symbols are in alphabet, and all mentioned states are in states
