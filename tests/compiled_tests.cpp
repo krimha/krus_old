@@ -2,6 +2,8 @@
 #include <krus/dfa.h>
 #include <krus/nfa.h>
 #include <krus/state_wrapper.h>
+#include <krus/utils.h>
+
 
 
 TEST_CASE( "Deterministic finite state machine tests" )
@@ -163,6 +165,20 @@ TEST_CASE ("Test StateWrapper")
 	StateWrapper s;
 	REQUIRE(s.str() == "{ }");
     }
+}
 
+TEST_CASE ("Test contains")
+{
+    std::vector<int> v { 3, 6, 4, 1, 5 };
+    std::set<int> s { 3, 6, 4, 1, 5 };
+    
+    REQUIRE(contains(v, 4));
+    REQUIRE(contains(v, 5));
+    REQUIRE_FALSE(contains(v, 9));
+    REQUIRE_FALSE(contains(v, 10));
 
+    REQUIRE(contains(s, 4));
+    REQUIRE(contains(s, 5));
+    REQUIRE_FALSE(contains(s, 9));
+    REQUIRE_FALSE(contains(s, 10));
 }
