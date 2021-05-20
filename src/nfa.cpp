@@ -44,7 +44,7 @@ NondeterministicFiniteAutomaton::NondeterministicFiniteAutomaton(
 DeterministicFiniteAutomaton NondeterministicFiniteAutomaton::asDFA()
 {
 
-    // We need random access
+    // We need random access to compute the permutateions
     // TODO: is there a better way to do this?
     std::vector<State> states;
     for (const auto& state : getStates()) {
