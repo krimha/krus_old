@@ -3,6 +3,8 @@
 #include <sstream>
 #include <algorithm>
 
+#include <krus/dfa.h>
+
 template<typename T>
 std::string iter_str(const T& iter)
 {
@@ -18,5 +20,12 @@ std::string iter_str(const T& iter)
 template<typename Container, typename Element>
 bool contains(const Container& container, const Element& elem)
 {
-    return std::find(container.cbegin(), container.cend(), elem) != container.cend();
+    // TODO: Possible to unify these
+    // TODO: Maybe make more general (i.e. work with maps)
+    if constexpr (std::is_same_v<Container, DeterministicFiniteAutomaton::TransitionFunction>) {
+	return container.find(elem) != container.cend();
+    }
+    else {
+	return std::find(container.cbegin(), container.cend(), elem) != container.cend();
+    }
 }
