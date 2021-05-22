@@ -116,12 +116,18 @@ TEST_CASE ( "Test nondeterministic finite state machine" )
     NFA::StateSet accept_states = {"q1"};
 
     NFA nfa { states, alpha, func, start_state, accept_states };
+    REQUIRE(contains(nfa.getEpsReachable()["q1"], "q1"));
+    REQUIRE(contains(nfa.getEpsReachable()["q2"], "q2"));
+    REQUIRE(contains(nfa.getEpsReachable()["q3"], "q3"));
+
+    REQUIRE(contains(nfa.getEpsReachable()["q1"], "q3"));
+
 
     auto dfa = nfa.asDFA();
-
     REQUIRE(dfa.verify() == Status::OK);
-    // REQUIRE(dfa.getStartState() == "{ q1 q3 }");
+    REQUIRE(dfa.getStartState() == "{ q1 q3 }");
     REQUIRE(dfa.getAlphabet() == alpha);
+
 
     // If the NFA has k states, the equivalent DFA has 2^k states
     size_t k = nfa.getStates().size();
@@ -130,20 +136,20 @@ TEST_CASE ( "Test nondeterministic finite state machine" )
     // TODO: Should also test that the accept states are valid, but that is difficult with the current implementation
     REQUIRE(dfa.getAcceptStates().size() == 4);
 
-    for (const auto& [k,out] : dfa.getTransFunc()) {
-	const auto&[in,sym] = k;
+    /* for (const auto& [k,out] : dfa.getTransFunc()) { */
+	/* const auto&[in,sym] = k; */
 	
-	std::cout << in << ' ' << sym << ' ' << out << '\n';
-    }
+	/* std::cout << in << ' ' << sym << ' ' << out << '\n'; */
+    /* } */
 
-    /* REQUIRE(dfa.match(std::string(""))); */
-    /* REQUIRE(dfa.match(std::string("a"))); */
-    /* REQUIRE(dfa.match(std::string("baba"))); */
-    /* REQUIRE(dfa.match(std::string("baa"))); */
+    REQUIRE(dfa.match(std::string("")));
+    REQUIRE(dfa.match(std::string("a")));
+    REQUIRE(dfa.match(std::string("baba")));
+    REQUIRE(dfa.match(std::string("baa")));
 
-    //REQUIRE_FALSE(dfa.match(std::string("b")));
-    //REQUIRE_FALSE(dfa.match(std::string("bb")));
-    //REQUIRE_FALSE(dfa.match(std::string("babba")));
+    REQUIRE_FALSE(dfa.match(std::string("b")));
+    REQUIRE_FALSE(dfa.match(std::string("bb")));
+    REQUIRE_FALSE(dfa.match(std::string("babba")));
 }
 
 TEST_CASE ("Test StateWrapper")

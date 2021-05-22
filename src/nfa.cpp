@@ -1,4 +1,5 @@
 #include <set>
+#include <queue>
 #include <krus/nfa.h>
 #include <krus/dfa.h>
 #include <krus/utils.h>
@@ -38,6 +39,8 @@ NondeterministicFiniteAutomaton::NondeterministicFiniteAutomaton(
 	}
 
     } 
+
+    initialize_eps_reachable();
     
 };
 
@@ -52,6 +55,7 @@ DeterministicFiniteAutomaton NondeterministicFiniteAutomaton::asDFA()
     }
     
 
+    // Find set of states
     std::vector<StateWrapper> power_set;
     for (int intmap=0; intmap < (1 << getStates().size()); ++intmap) {
 	int current_map = intmap;
@@ -69,14 +73,30 @@ DeterministicFiniteAutomaton NondeterministicFiniteAutomaton::asDFA()
 	power_set.push_back(current_set);
     }
 
-    // Determine which states are reachable by walking across eps-arrows
+    // Find start state
+    StateWrapper start_state;
+    for (const auto& state : eps_reachable[start_state_]) {
+	start_state.insert(state);
+    }
+    
 
     // Construct most basic transition function
     DeterministicFiniteAutomaton::TransitionFunction transition_function;
-    for (const auto& state : power_set) {
-	for (const auto& symbol : getAlphabet()) {
-	    auto state_str = state.str();
-	    transition_function.insert({{state_str, symbol}, {state_str}});
+    for (const auto& symbol : getAlphabet()) {
+	for (const auto& dfa_src_state : power_set) {
+	    StateWrapper dfa_target_state;
+
+	    for (const auto& nfa_src_state : dfa_src_state.getSet()) {
+		for (const auto& nfa_target_state : transition_function_[{nfa_src_state, symbol}]) {
+		    dfa_target_state.insert(nfa_target_state);
+
+		    for (const auto& eps_reachable_state : eps_reachable[nfa_target_state]) {
+			dfa_target_state.insert(eps_reachable_state);
+		    }
+		}
+	    }
+
+	    transition_function.insert({{dfa_src_state.str(), symbol}, dfa_target_state.str()});
 	}
     }
 
@@ -108,7 +128,47 @@ DeterministicFiniteAutomaton NondeterministicFiniteAutomaton::asDFA()
 	power_set_as_strings,
 	getAlphabet(),
 	transition_function,
-	"{ q1 q3 }",
+	start_state.str(),
 	accept_states_as_strings
     };
+}
+
+
+// TODO: Might not handle syclic graphs
+void NondeterministicFiniteAutomaton::initialize_eps_reachable()
+{
+    // Find all eps-edges
+    std::map<State,std::vector<State>> edges;
+    for (const auto& [k, target_states] : transition_function_) {
+	auto source_state = k.first;
+	auto symbol = k.second;
+
+	if (symbol != empty_string_)
+	    continue;
+	
+	edges.insert({source_state, target_states});
+    }
+
+/*     for (const auto& state : getStates()) { */
+/* 	eps_reachable.insert({state, {state}}); */
+/*     } */
+
+    for (const auto& src_state : getStates()) {
+	eps_reachable.insert({src_state, {}});
+	std::queue<State> queue;
+
+	queue.push(src_state);
+	while (!queue.empty()) {
+	    auto state = queue.front();
+	    queue.pop();
+
+	    eps_reachable[src_state].insert(state);
+	    for (const auto& target_state : edges[state]) {
+		queue.push(target_state);
+	    }
+	}
+
+    }
+
+
 }

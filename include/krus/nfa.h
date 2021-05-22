@@ -32,10 +32,15 @@ public:
     TransitionFunction getTransFunc() { return transition_function_; };
     State getStartState() { return start_state_; };
     StateSet getAcceptStates() { return accept_states_; };
+    
+    std::map<State,std::set<State>> getEpsReachable() { return eps_reachable; }
 
     DeterministicFiniteAutomaton asDFA();
 
+
 private:
+    void initialize_eps_reachable();
+
     StateSet states_;
     Alphabet alphabet_;
     TransitionFunction transition_function_;
